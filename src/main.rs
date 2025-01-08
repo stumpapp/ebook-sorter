@@ -2,10 +2,10 @@ use comfy_table::{modifiers::UTF8_ROUND_CORNERS, presets::UTF8_FULL, ContentArra
 use epub::doc::EpubDoc;
 use eyre::Result;
 use indicatif::{ProgressBar, ProgressStyle};
-use std::path::PathBuf;
+use std::{fs::File, io::BufReader, path::PathBuf};
 
 use clap::{Parser, ValueEnum};
-use walkdir::WalkDir;
+use walkdir::{DirEntry, WalkDir};
 
 #[derive(ValueEnum, Clone, Default, Debug)]
 enum PlaceStrategy {
@@ -104,7 +104,8 @@ fn main() -> Result<()> {
                 continue;
             }
         }
-        let destination = author_dir.join(entry.file_name());
+        let filename = format_book(&book, &entry);
+        let destination = author_dir.join(filename);
 
         match args.strategy {
             PlaceStrategy::Copy => {
@@ -147,4 +148,11 @@ fn main() -> Result<()> {
     println!("{table}");
 
     Ok(())
+}
+
+fn format_book(book: &EpubDoc<BufReader<File>>, entry: &DirEntry) -> String {
+    match book.metadata.get("title").and_then(|t| t.first().cloned()) {
+        Some(title) => format!("{}.epub", title.trim()),
+        _ => entry.file_name().to_string_lossy().trim().to_string(),
+    }
 }
