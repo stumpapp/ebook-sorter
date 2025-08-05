@@ -6,9 +6,10 @@ edition = "2021"
 [dependencies]
 clap = { version = "4.5.24", features = ["derive"] }
 comfy-table = "7.1.3"
-epub = "2.1.2"
+epub = { git = "https://github.com/danigm/epub-rs.git", rev = "8ffbbf10e6cae89316c6afd7d1862f0f3db80e35" }
 eyre = "0.6.12"
 indicatif = "0.17.9"
 prettytable-rs = "0.10.0"
-thiserror = "2.0.9"
+thiserror = "2.0.12"
 walkdir = "2.5.0"
+
